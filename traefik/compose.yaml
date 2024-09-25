@@ -39,7 +39,7 @@ services:
         - traefik.http.routers.traefik-public-http.middlewares=https-redirect
         # traefik-https the actual router using HTTPS
         # Uses the environment variable DOMAI
-        - traefik.http.routers.traefik-public-https.rule=Host(`traefik.viomitra.ru`)
+        - traefik.http.routers.traefik-public-https.rule=Host(`traefik.namemaster.online`)
         - traefik.http.routers.traefik-public-https.entrypoints=https
         - traefik.http.routers.traefik-public-https.tls=true
         # Use the special Traefik service api@internal with the web UI/Dashboard
