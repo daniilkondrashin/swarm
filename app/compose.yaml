@@ -1,22 +1,25 @@
-version: '3'
+version: "3.7"
 
 services:
-  web:
+  app:
     image: daniil3680/namemaster:latest
-    volumes:
-      - ./app:/app
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik-public
-      - traefik.constraint-label=traefik-public
-      - traefik.http.routers.whoami-http.rule=Host(`whoami.namemaster.online`)
-      - traefik.http.routers.whoami-http.entrypoints=http
-      - traefik.http.routers.whoami-http.middlewares=https-redirect
-      - traefik.http.routers.whoami-https.rule=Host(`whoami.namemaster.online`)
-      - traefik.http.routers.whoami-https.entrypoints=https
-      - traefik.http.routers.whoami-https.tls=true
-      - traefik.http.routers.whoami-https.tls.certresolver=le
-      - traefik.http.services.whoami.loadbalancer.server.port=5000
+    deploy:
+      replicas: 1                            # Количество реплик
+      placement:
+        constraints:
+          - node.role == manager              # Размещать только на worker-нодах
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.whoami-http.rule=Host(`whoami.namemaster.online`)
+        - traefik.http.routers.whoami-http.entrypoints=http
+        - traefik.http.routers.whoami-http.middlewares=https-redirect
+        - traefik.http.routers.whoami-https.rule=Host(`whoami.namemaster.online`)
+        - traefik.http.routers.whoami-https.entrypoints=https
+        - traefik.http.routers.whoami-https.tls=true
+        - traefik.http.routers.whoami-https.tls.certresolver=le
+        - traefik.http.services.whoami.loadbalancer.server.port=80
     depends_on:
       - db
     environment:
@@ -41,10 +44,10 @@ services:
     networks:
       - app
 
-volumes:
-  postgres_data:
-
 networks:
   traefik-public:
     external: true
   app:
+
+volumes:
+  postgres_data:
