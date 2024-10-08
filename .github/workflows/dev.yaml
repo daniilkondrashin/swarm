@@ -47,7 +47,7 @@ jobs:
       - name: Deploy to Docker Swarm on remote server
         uses: appleboy/ssh-action@v0.1.8
         env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          IMAGE_NAME: $IMAGE_NAME
 
         with:
           host: ${{ secrets.SSH_HOST }}
