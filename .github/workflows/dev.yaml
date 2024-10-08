@@ -35,6 +35,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         IMAGE_NAME=daniil3680/namemaster:${{ env.AUTHOR_NAME }}-${{ env.COMMIT_HASH }}-${{ env.COMMIT_DATE }}
+        ls -la
         docker build -f ./app/Dockerfile -t $IMAGE_NAME .
         docker push $IMAGE_NAME
 
