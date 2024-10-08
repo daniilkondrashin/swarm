@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Get commit info
+      id: commit_info
+      run: |
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        COMMIT_DATE=$(git show -s --format=%ci HEAD | cut -d' ' -f1)
+        AUTHOR_NAME=$(git log -1 --pretty=format:'%an' | tr ' ' '-')
+        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+        echo "COMMIT_DATE=${COMMIT_DATE}" >> $GITHUB_ENV
+        echo "AUTHOR_NAME=${AUTHOR_NAME}" >> $GITHUB_ENV
+
+    - name: Build and push Docker image
+      run: |
+        IMAGE_NAME=daniil3680/namemaster:${{ env.AUTHOR_NAME }}-${{ env.COMMIT_HASH }}-${{ env.COMMIT_DATE }}
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to Docker Swarm on remote server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export COMMIT_HASH="${{ env.COMMIT_HASH }}"
+            export COMMIT_DATE="${{ env.COMMIT_DATE }}"
+            export AUTHOR_NAME="${{ env.AUTHOR_NAME }}"
+            docker stack deploy --with-registry-auth -c swarm/app/compose.yaml mithratrades-dev
+          debug: true
