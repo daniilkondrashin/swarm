@@ -1,6 +1,6 @@
 ## Инициализация Docker Swarm
 ```sh
-docker swarm init --advertise-addr <Ваш_Приватный_IP>
+docker swarm init --advertise-addr 172.31.86.157 
 ```
 ## Добавление worker-узла
 ```sh
