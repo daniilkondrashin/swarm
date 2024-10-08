@@ -47,18 +47,14 @@ jobs:
       - name: Deploy to Docker Swarm on remote server
         uses: appleboy/ssh-action@v0.1.8
         env:
-          AUTHOR_NAME: ${{ env.AUTHOR_NAME }}
-          COMMIT_HASH: ${{ env.COMMIT_HASH }}
-          COMMIT_DATE: ${{ env.COMMIT_DATE }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
 
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: AUTHOR_NAME, COMMIT_HASH, COMMIT_DATE
+          envs: IMAGE_NAME
           script: |
-            echo "Commit Hash: $COMMIT_HASH"
-            echo "Commit Date: $COMMIT_DATE"
-            echo "Author Name: $AUTHOR_NAME"
+            echo "Commit Hash: $IMAGE_NAME"
             docker stack deploy --with-registry-auth -c swarm/app/compose.yaml mithratrades-dev
           debug: true
