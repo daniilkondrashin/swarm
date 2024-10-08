@@ -57,5 +57,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: AUTHOR_NAME, COMMIT_HASH, COMMIT_DATE
           script: |
+            echo "Commit Hash: $COMMIT_HASH"
+            echo "Commit Date: $COMMIT_DATE"
+            echo "Author Name: $AUTHOR_NAME"
             docker stack deploy --with-registry-auth -c swarm/app/compose.yaml mithratrades-dev
           debug: true
