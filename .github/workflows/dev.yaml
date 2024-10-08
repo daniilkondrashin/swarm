@@ -46,27 +46,16 @@ jobs:
     steps:
       - name: Deploy to Docker Swarm on remote server
         uses: appleboy/ssh-action@v0.1.8
+        env:
+          AUTHOR_NAME: ${{ env.AUTHOR_NAME }}
+          COMMIT_HASH: ${{ env.COMMIT_HASH }}
+          COMMIT_DATE: ${{ env.COMMIT_DATE }}
+
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: AUTHOR_NAME, COMMIT_HASH, COMMIT_DATE
           script: |
-            # Прямое присвоение переменных
-            COMMIT_HASH="${{ env.COMMIT_HASH }}"
-            COMMIT_DATE="${{ env.COMMIT_DATE }}"
-            AUTHOR_NAME="${{ env.AUTHOR_NAME }}"
-
-            # Отладочный вывод
-            echo "Commit Hash: $COMMIT_HASH"
-            echo "Commit Date: $COMMIT_DATE"
-            echo "Author Name: $AUTHOR_NAME"
-
-            # Проверьте, что переменные не пустые
-            if [ -z "$COMMIT_HASH" ] || [ -z "$COMMIT_DATE" ] || [ -z "$AUTHOR_NAME" ]; then
-              echo "Error: One or more environment variables are empty."
-              exit 1
-            fi
-
             docker stack deploy --with-registry-auth -c swarm/app/compose.yaml mithratrades-dev
           debug: true
-
