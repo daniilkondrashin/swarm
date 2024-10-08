@@ -31,6 +31,7 @@ services:
         namemaster-secretkey: 9b908738adb74b789012511dce6e0bfe
     networks:
       - traefik-public
+      - app
 
   db:
     image: postgres:12
@@ -40,10 +41,12 @@ services:
       POSTGRES_DB: mydatabase
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+      - app
+      
 networks:
   traefik-public:
     external: true
+  app:
 
 volumes:
   postgres_data:
