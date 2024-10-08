@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   app:
-    image: daniil3680/namemaster:${{ env.AUTHOR_NAME }}-${{ env.COMMIT_HASH }}-${{ env.COMMIT_DATE }}
+    image: daniil3680/namemaster:${AUTHOR_NAME}-${COMMIT_HASH}-${COMMIT_DATE}
     deploy:
       replicas: 1                            # Количество реплик
       placement:
