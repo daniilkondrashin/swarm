@@ -51,10 +51,16 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export COMMIT_HASH="${{ env.COMMIT_HASH }}"
-            export COMMIT_DATE="${{ env.COMMIT_DATE }}"
-            export AUTHOR_NAME="${{ env.AUTHOR_NAME }}"
-            
+            # Прямое присвоение переменных
+            COMMIT_HASH="${{ env.COMMIT_HASH }}"
+            COMMIT_DATE="${{ env.COMMIT_DATE }}"
+            AUTHOR_NAME="${{ env.AUTHOR_NAME }}"
+
+            # Отладочный вывод
+            echo "Commit Hash: $COMMIT_HASH"
+            echo "Commit Date: $COMMIT_DATE"
+            echo "Author Name: $AUTHOR_NAME"
+
             # Проверьте, что переменные не пустые
             if [ -z "$COMMIT_HASH" ] || [ -z "$COMMIT_DATE" ] || [ -z "$AUTHOR_NAME" ]; then
               echo "Error: One or more environment variables are empty."
@@ -63,3 +69,4 @@ jobs:
 
             docker stack deploy --with-registry-auth -c swarm/app/compose.yaml mithratrades-dev
           debug: true
+
