@@ -28,7 +28,7 @@ jobs:
           AUTHOR_NAME=$(git log -1 --pretty=format:'%an' | tr -s ' ' '-')  # Заменяем пробелы на дефисы
           COMMIT_HASH=${GITHUB_SHA::7}
           COMMIT_DATE=$(date +'%Y-%m-%d')  # Читаемая дата
-          COMMIT_TIME=$(date +'%H:%M:%S')  # Читаемое время
+          COMMIT_TIME=$(date +'%H.%M.%S')  # Читаемое время
           IMAGE_TAG="${AUTHOR_NAME}-${COMMIT_HASH}-${COMMIT_DATE}-${COMMIT_TIME}"
           IMAGE_TAG=$(echo "$IMAGE_TAG" | tr -cd '[:alnum:]-:')
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
