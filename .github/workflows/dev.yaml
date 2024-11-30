@@ -49,19 +49,19 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./docker-compose.yml"
+          source: "app/compose.yaml"
           target: "~/deployments/namemaster/"
 
       # Обновление тега образа в docker-compose.yml на сервере
       - name: Update docker-compose on remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "
-          sed -i 's|daniil3680/namemaster:.*|${{ secrets.DOCKER_USERNAME }}/namemaster:$IMAGE_TAG|g' ~/deployments/namemaster/docker-compose.yml
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+          sed -i 's|daniil3680/namemaster:.*|daniil3680/namemaster:$IMAGE_TAG|g' ~/deployments/namemaster/docker-compose.yml
           "
 
       # Деплой с использованием Docker Compose
       - name: Deploy to Docker Swarm
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
           docker stack deploy --compose-file ~/deployments/namemaster/docker-compose.yml namemaster-stack
           "
