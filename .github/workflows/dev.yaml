@@ -52,6 +52,13 @@ jobs:
           source: "app/compose.yaml"
           target: "~/deployments/namemaster/"
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+        
+
       # Обновление тега образа в docker-compose.yml на сервере
       - name: Update docker-compose on remote server
         run: |
