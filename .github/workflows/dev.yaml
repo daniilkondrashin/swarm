@@ -25,13 +25,14 @@ jobs:
       - name: Generate unique image tag
         id: tag
         run: |
-          AUTHOR_NAME=$(git log -1 --pretty=format:'%an' | tr ' ' '-')
+          AUTHOR_NAME=$(git log -1 --pretty=format:'%an' | tr -s ' ' '-')  # Заменяем пробелы на дефисы
           COMMIT_HASH=${GITHUB_SHA::7}
           COMMIT_DATE=$(date +'%Y%m%d%H%M')
-          echo "AUTHOR_NAME=$AUTHOR_NAME" >> $GITHUB_ENV
-          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-          echo "IMAGE_TAG=$AUTHOR_NAME-$COMMIT_HASH-$COMMIT_DATE" >> $GITHUB_ENV
+          # Убираем все нежелательные символы
+          IMAGE_TAG=$(echo "$AUTHOR_NAME-$COMMIT_HASH-$COMMIT_DATE" | tr -cd '[:alnum:]-')
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG"
+    
 
       # Сборка и пуш Docker-образа
       - name: Build and push Docker image
