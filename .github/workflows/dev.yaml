@@ -63,12 +63,12 @@ jobs:
       - name: Update docker-compose on remote server
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
-          sed -i 's|daniil3680/namemaster:.*|daniil3680/namemaster:$IMAGE_TAG|g' ~/deployments/namemaster/docker-compose.yml
+          sed -i 's|daniil3680/namemaster:.*|daniil3680/namemaster:$IMAGE_TAG|g' ~/deployments/namemaster/compose.yaml
           "
 
       # Деплой с использованием Docker Compose
       - name: Deploy to Docker Swarm
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
-          docker stack deploy --compose-file ~/deployments/namemaster/docker-compose.yml namemaster-stack
+          docker stack deploy --compose-file ~/deployments/namemaster/compose.yaml namemaster-stack
           "
